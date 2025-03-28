@@ -25,7 +25,7 @@ const RegisterPage = () => {
     <div>
       <div className="register">
         <div className="register_content">
-          <form className="register_content__form">
+          <form className="register_content_form">
             <input
               placeholder="First Name"
               name="firstname"
@@ -76,6 +76,14 @@ const RegisterPage = () => {
               <img src="/assets/addImage.png" alt="add prfile photo" />
               <p>Upload profile photo</p>
             </label>
+
+            {formData.profileImage && (
+              <img
+                src={URL.createObjectURL(formData.profileImage)}
+                alt="profile photo"
+                style={{ maxWidth: "80px", maxHeight: "80px" }}
+              />
+            )}
             <button type="submit">Register</button>
           </form>
           <a href="/login">Already have an account? Login</a>
