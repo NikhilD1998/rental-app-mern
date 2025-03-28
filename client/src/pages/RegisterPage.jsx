@@ -1,24 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
+import "../styles/Register.scss";
 
 const RegisterPage = () => {
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    profileImage: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === "profileImage" ? files[0] : value,
+    });
+  };
+
+  console.log(formData);
+
   return (
     <div>
-      <div className="regsiter">
-        <div className="register__content">
-          <form>
-            <input placeholder="First Name" name="firstname" required />
-            <input placeholder="Last Name" name="lastname" required />
-            <input placeholder="Email" name="email" required />
+      <div className="register">
+        <div className="register_content">
+          <form className="register_content__form">
+            <input
+              placeholder="First Name"
+              name="firstname"
+              value={formData.firstname}
+              onChange={handleChange}
+              required
+            />
+            <input
+              placeholder="Last Name"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              required
+            />
+            <input
+              placeholder="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
             <input
               placeholder="Password"
               name="password"
               type="password"
+              value={formData.password}
+              onChange={handleChange}
               required
             />
             <input
               placeholder="Confirm password"
               name="confirmPassword"
               type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
               required
             />
             <input
@@ -26,6 +68,7 @@ const RegisterPage = () => {
               type="file"
               name="profileImage"
               accept="image/*"
+              onChange={handleChange}
               required
               style={{ display: "none" }}
             />
