@@ -17,6 +17,7 @@ app.use("/auth", authRoutes);
 const PORT = 3001;
 mongoose
   .connect(process.env.MONGO_URL, {
+    dbName: "rental_app",
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

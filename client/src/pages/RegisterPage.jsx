@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Register.scss";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -21,11 +22,44 @@ const RegisterPage = () => {
 
   console.log(formData);
 
+  const [passwordMatch, setPasswrodMatch] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setPasswrodMatch(
+      formData.password === formData.confirmPassword ||
+        formData.confirmPassword === ""
+    );
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const register_form = new FormData();
+
+      for (var key in formData) {
+        register_form.append(key, formData[key]);
+      }
+
+      const response = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        body: register_form,
+      });
+
+      if (response.ok) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error.message);
+    }
+  };
+
   return (
     <div>
       <div className="register">
         <div className="register_content">
-          <form className="register_content_form">
+          <form className="register_content_form" onSubmit={handleSubmit}>
             <input
               placeholder="First Name"
               name="firstname"
@@ -63,6 +97,12 @@ const RegisterPage = () => {
               onChange={handleChange}
               required
             />
+
+            {!passwordMatch && (
+              <p style={{ color: "red" }}>
+                Passwords do not match. Please try again.
+              </p>
+            )}
             <input
               id="image"
               type="file"
@@ -84,7 +124,9 @@ const RegisterPage = () => {
                 style={{ maxWidth: "80px", maxHeight: "80px" }}
               />
             )}
-            <button type="submit">Register</button>
+            <button type="submit" disabled={!passwordMatch}>
+              Register
+            </button>
           </form>
           <a href="/login">Already have an account? Login</a>
         </div>

@@ -9,7 +9,9 @@ const storage = multer.diskStorage({
     cb(null, "public/uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, req.body.name);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const originalName = file.originalname.replace(/\s+/g, "_"); // Replace spaces with underscores
+    cb(null, `${uniqueSuffix}-${originalName}`);
   },
 });
 
@@ -20,7 +22,7 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
     const { firstname, lastname, email, password } = req.body;
     const profileImage = req.file;
 
-    if (profileImage) {
+    if (!profileImage) {
       return res.status(400).json("No file uploaded");
     }
 
@@ -45,10 +47,12 @@ router.post("/register", upload.single("profileImage"), async (req, res) => {
     await newUser.save();
     res
       .status(200)
-      .json({ mesage: "User created successfully", user: newUser });
+      .json({ message: "User created successfully", user: newUser });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Registration failed", error: err.mesage });
+    res
+      .status(500)
+      .json({ message: "Registration failed", error: err.message });
   }
 });
 
